@@ -31,7 +31,6 @@ func NewWheelDriver(a gpio.DigitalWriter, pinRight, pinLeft string) *WheelDriver
 		name:       gobot.DefaultName("Wheel"),
 		state:      stop,
 		connection: a,
-		lock:       sync.Mutex{},
 		Commander:  gobot.NewCommander(),
 	}
 }
