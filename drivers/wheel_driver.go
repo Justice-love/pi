@@ -31,6 +31,7 @@ func NewWheelDriver(a gpio.DigitalWriter, pinRight, pinLeft string) *WheelDriver
 		name:       gobot.DefaultName("Wheel"),
 		state:      stop,
 		connection: a,
+		lock:       sync.Mutex{},
 		Commander:  gobot.NewCommander(),
 	}
 }
@@ -62,7 +63,7 @@ func (w *WheelDriver) Stop() error {
 	w.lock.Lock()
 	defer w.lock.Unlock()
 
-	if err := w.connection.DigitalWrite(w.pinRight, 1); err != nil {
+	if err := w.connection.DigitalWrite(w.pinRight, 0); err != nil {
 		return err
 	}
 	if err := w.connection.DigitalWrite(w.pinLeft, 0); err != nil {
