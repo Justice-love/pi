@@ -1,6 +1,4 @@
-.PHONY: build clean fmt
-
-buildall: build buildt buildmac
+.PHONY: build clean fmt scp run
 
 scp: build
 	@echo "scp"
