@@ -16,7 +16,7 @@ func main() {
 		})
 	}
 
-	robot := gobot.NewRobot("motorBot",
+	robot := gobot.NewRobot("wheelBot",
 		[]gobot.Connection{r},
 		[]gobot.Driver{w},
 		work,
