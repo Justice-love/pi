@@ -1,31 +1,24 @@
 package main
 
 import (
+	"eddy.org/pi/drivers"
 	"gobot.io/x/gobot"
-	"gobot.io/x/gobot/drivers/gpio"
 	"gobot.io/x/gobot/platforms/raspi"
 	"time"
 )
 
 func main() {
 	r := raspi.NewAdaptor()
-
-	led1 := gpio.NewLedDriver(r, "11")
-	led2 := gpio.NewLedDriver(r, "12")
-
-	led1.On()
-	led2.Off()
+	w := drivers.NewWheelDriver(r, "11", "12")
 	work := func() {
 		gobot.Every(5*time.Second, func() {
-
-			led1.Toggle()
-			led2.Toggle()
+			_ = w.Toggle()
 		})
 	}
 
 	robot := gobot.NewRobot("motorBot",
 		[]gobot.Connection{r},
-		[]gobot.Device{led1, led2},
+		[]gobot.Driver{w},
 		work,
 	)
 
