@@ -48,6 +48,13 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		df := <-u.driver.echoChan
 		assert.Equal(float64(850), math.Trunc(float64(df)))
 	})
+	u.T().Run("test long", func(t *testing.T) {
+		assert := require.New(t)
+		err := u.driver.Trig()
+		assert.NoError(err)
+		time.Sleep(1 * time.Second)
+		assert.Empty(0, len(u.driver.echoChan))
+	})
 
 }
 
