@@ -3,10 +3,16 @@ package test
 type Adaptor struct {
 	N         string
 	WriteChan chan<- CheckValue
+	ReadChan  <-chan int
 }
+
 type CheckValue struct {
 	Pin string
 	Val byte
+}
+
+func (a *Adaptor) DigitalRead(string) (val int, err error) {
+	return <-a.ReadChan, nil
 }
 
 func (a *Adaptor) DigitalWrite(pin string, val byte) (err error) {

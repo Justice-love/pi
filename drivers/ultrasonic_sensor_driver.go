@@ -29,7 +29,10 @@ func (u *UltrasonicSensorDriver) Start() error {
 		for {
 			select {
 			case <-u.trigChan:
-				checkHigh(u.connection.(gpio.DigitalReader), u.pinEcho)
+				cr := checkHigh(u.connection.(gpio.DigitalReader), u.pinEcho)
+				if !cr {
+					continue
+				}
 				begin := time.Now()
 				checkLow(u.connection.(gpio.DigitalReader), u.pinEcho)
 				d := time.Since(begin)
@@ -41,12 +44,17 @@ func (u *UltrasonicSensorDriver) Start() error {
 	return nil
 }
 
-func checkHigh(reader gpio.DigitalReader, pinEcho string) {
+func checkHigh(reader gpio.DigitalReader, pinEcho string) bool {
+	now := time.Now()
 	for {
 		val, _ := reader.DigitalRead(pinEcho)
 		if val > 0 {
-			return
+			return true
 		}
+		if time.Since(now).Milliseconds() > 100 {
+			return false
+		}
+		time.Sleep(5 * time.Millisecond)
 	}
 }
 
@@ -83,7 +91,7 @@ func (u *UltrasonicSensorDriver) Trig() error {
 	if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 1); err != nil {
 		return err
 	}
-	c := time.After(4 * time.Microsecond)
+	c := time.After(10 * time.Microsecond)
 	<-c
 	if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 0); err != nil {
 		return err
