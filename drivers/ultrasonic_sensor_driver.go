@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
 	"time"
@@ -33,10 +34,15 @@ func (u *UltrasonicSensorDriver) Start() error {
 				if !cr {
 					continue
 				}
+				log.Info("driver/UltrasonicSensorDriver: trig and high level")
 				begin := time.Now()
 				checkLow(u.connection.(gpio.DigitalReader), u.pinEcho)
 				d := time.Since(begin)
 				distance := float32(d.Milliseconds()) * 0.34 / 2.0
+				log.WithFields(log.Fields{
+					"duration": d,
+					"distance": distance,
+				}).Info("driver/UltrasonicSensorDriver: receive ultrasonic")
 				u.echoChan <- distance
 			}
 		}

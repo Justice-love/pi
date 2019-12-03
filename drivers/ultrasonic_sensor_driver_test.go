@@ -46,7 +46,7 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		<-tc
 		u.readChan <- 0
 		df := <-u.driver.echoChan
-		assert.Equal(float64(850), math.Trunc(float64(df)))
+		assert.Equal(float64(850), math.Round(float64(df)))
 	})
 	u.T().Run("test long", func(t *testing.T) {
 		assert := require.New(t)
