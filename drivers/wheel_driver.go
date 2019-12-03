@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
 	"sync"
@@ -56,6 +57,7 @@ func (w *WheelDriver) Connection() gobot.Connection {
 }
 
 func (w *WheelDriver) Stop() error {
+	log.Info("stop")
 	if w.state == stop {
 		return nil
 	}
@@ -74,6 +76,7 @@ func (w *WheelDriver) Stop() error {
 }
 
 func (w *WheelDriver) Front() error {
+	log.Info("front")
 	if w.state == front {
 		return nil
 	}
@@ -91,6 +94,7 @@ func (w *WheelDriver) Front() error {
 }
 
 func (w *WheelDriver) Back() error {
+	log.Info("back")
 	if w.state == back {
 		return nil
 	}
@@ -108,6 +112,7 @@ func (w *WheelDriver) Back() error {
 }
 
 func (w *WheelDriver) Toggle() error {
+	log.Info("toggle")
 	if w.state == stop || w.state == back {
 		if err := w.Front(); err != nil {
 			return err
