@@ -10,22 +10,27 @@ import (
 )
 
 type UltrasonicSensorDriverTestSuite struct {
-	driver    *UltrasonicSensorDriver
-	readChan  chan int
-	checkChan <-chan test.CheckValue
+	driver       *UltrasonicSensorDriver
+	readChan     chan int
+	checkChan    <-chan test.CheckValue
+	distanceChan chan float32
 	suite.Suite
 }
 
 func (u *UltrasonicSensorDriverTestSuite) SetupSuite() {
 	c := make(chan int, 100)
 	cc := make(chan test.CheckValue, 100)
+	dc := make(chan float32, 100)
 	u.driver = NewUltrasonicSensorDriver(&test.Adaptor{
 		N:         "test",
 		ReadChan:  c,
 		WriteChan: cc,
-	}, "1", "2")
+	}, "1", "2", func(distance float32) {
+		dc <- distance
+	})
 	u.readChan = c
 	u.checkChan = cc
+	u.distanceChan = dc
 }
 
 func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
@@ -45,7 +50,7 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		tc := time.After(5 * time.Second)
 		<-tc
 		u.readChan <- 0
-		df := <-u.driver.echoChan
+		df := <-u.distanceChan
 		assert.Equal(float64(850), math.Round(float64(df)))
 	})
 	u.T().Run("test long", func(t *testing.T) {
@@ -53,7 +58,7 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		err := u.driver.Trig()
 		assert.NoError(err)
 		time.Sleep(1 * time.Second)
-		assert.Empty(0, len(u.driver.echoChan))
+		assert.Empty(0, len(u.distanceChan))
 	})
 
 }
