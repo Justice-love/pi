@@ -4,7 +4,6 @@ import (
 	"eddy.org/pi/drivers/test"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"math"
 	"testing"
 	"time"
 )
@@ -13,19 +12,19 @@ type UltrasonicSensorDriverTestSuite struct {
 	driver       *UltrasonicSensorDriver
 	readChan     chan int
 	checkChan    <-chan test.CheckValue
-	distanceChan chan float32
+	distanceChan chan int64
 	suite.Suite
 }
 
 func (u *UltrasonicSensorDriverTestSuite) SetupSuite() {
 	c := make(chan int, 100)
 	cc := make(chan test.CheckValue, 100)
-	dc := make(chan float32, 100)
+	dc := make(chan int64, 100)
 	u.driver = NewUltrasonicSensorDriver(&test.Adaptor{
 		N:         "test",
 		ReadChan:  c,
 		WriteChan: cc,
-	}, "1", "2", func(distance float32) {
+	}, "1", "2", func(distance int64) {
 		dc <- distance
 	})
 	u.readChan = c
@@ -51,7 +50,7 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		<-tc
 		u.readChan <- 0
 		df := <-u.distanceChan
-		assert.Equal(float64(850), math.Round(float64(df)))
+		assert.Equal(int64(85000), df&0x1FFC8)
 	})
 	u.T().Run("test long", func(t *testing.T) {
 		assert := require.New(t)

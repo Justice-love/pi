@@ -12,12 +12,12 @@ type UltrasonicSensorDriver struct {
 	pinEcho    string
 	name       string
 	trigChan   chan int8
-	echo       func(distance float32)
+	echo       func(distance int64)
 	connection gobot.Adaptor
 	gobot.Commander
 }
 
-func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig, pinEcho string, echo func(distance float32)) *UltrasonicSensorDriver {
+func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig, pinEcho string, echo func(distance int64)) *UltrasonicSensorDriver {
 	return &UltrasonicSensorDriver{
 		pinTrig:    pinTrig,
 		pinEcho:    pinEcho,
@@ -53,7 +53,7 @@ func (u *UltrasonicSensorDriver) Start() error {
 				begin := time.Now()
 				checkLow(u.connection.(gpio.DigitalReader), u.pinEcho)
 				d := time.Since(begin)
-				distance := float32(d.Milliseconds()) * 0.34 / 2.0
+				distance := d.Milliseconds() * 17
 				log.WithFields(log.Fields{
 					"duration": d,
 					"distance": distance,
