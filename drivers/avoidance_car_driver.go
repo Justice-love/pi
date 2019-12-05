@@ -11,13 +11,13 @@ const (
 )
 
 type AvoidanceCarDriver struct {
-	carDriver              CarDriver
-	ultrasonicSensorDriver UltrasonicSensorDriver
+	carDriver              *CarDriver
+	ultrasonicSensorDriver *UltrasonicSensorDriver
 	name                   string
 	gobot.Commander
 }
 
-func NewAvoidanceCarDriver(cDriver CarDriver, uDriver UltrasonicSensorDriver) *AvoidanceCarDriver {
+func NewAvoidanceCarDriver(cDriver *CarDriver, uDriver *UltrasonicSensorDriver) *AvoidanceCarDriver {
 	return &AvoidanceCarDriver{
 		carDriver:              cDriver,
 		ultrasonicSensorDriver: uDriver,
@@ -59,9 +59,9 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 			if d < avoidanceDistance {
 				_ = a.carDriver.Stop()
 				if time.Now().Unix()&mask == mask {
-					_ = a.carDriver.Right()
+					go a.carDriver.Right()
 				} else {
-					_ = a.carDriver.Left()
+					go a.carDriver.Left()
 				}
 			}
 		}
