@@ -3,25 +3,22 @@ package drivers
 import (
 	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
-	"gobot.io/x/gobot/drivers/gpio"
 )
 
 type CarDriver struct {
-	name       string
-	wheels     wheels
-	connection gpio.DigitalWriter
+	name   string
+	wheels wheels
 	gobot.Commander
 }
 
 //0:right;1:left
 type wheels [2]*WheelDriver
 
-func NewCarDriver(a gpio.DigitalWriter, right, left *WheelDriver) *CarDriver {
+func NewCarDriver(right, left *WheelDriver) *CarDriver {
 	return &CarDriver{
-		name:       gobot.DefaultName("car"),
-		wheels:     wheels{right, left},
-		connection: a,
-		Commander:  gobot.NewCommander(),
+		name:      gobot.DefaultName("car"),
+		wheels:    wheels{right, left},
+		Commander: gobot.NewCommander(),
 	}
 }
 
@@ -45,7 +42,7 @@ func (c *CarDriver) Halt() error {
 }
 
 func (c *CarDriver) Connection() gobot.Connection {
-	return c.connection.(gobot.Connection)
+	return nil
 }
 
 func (c *CarDriver) Stop() error {

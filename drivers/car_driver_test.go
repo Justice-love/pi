@@ -20,7 +20,7 @@ func (c *CarDriverTestSuit) SetupSuite() {
 		WriteChan: cc,
 	}
 	c.checkChan = cc
-	c.carDriver = NewCarDriver(a, NewWheelDriver(
+	c.carDriver = NewCarDriver(NewWheelDriver(
 		a,
 		"1",
 		"2",
