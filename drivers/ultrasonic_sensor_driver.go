@@ -12,7 +12,7 @@ type UltrasonicSensorDriver struct {
 	pinEcho    string
 	name       string
 	trigChan   chan int8
-	echoChan   chan float32
+	echo       func(distance float32)
 	connection gobot.Adaptor
 	gobot.Commander
 }
@@ -26,15 +26,18 @@ func (u *UltrasonicSensorDriver) SetName(s string) {
 }
 
 func (u *UltrasonicSensorDriver) Start() error {
+	log.Info("driver/UltrasonicSensorDriver: start ")
 	go func() {
 		for {
 			select {
 			case <-u.trigChan:
+				log.Info("driver/UltrasonicSensorDriver: trig ")
 				cr := checkHigh(u.connection.(gpio.DigitalReader), u.pinEcho)
+				log.WithField("high check", cr).Info("driver/UltrasonicSensorDriver: trig and high check")
 				if !cr {
+					log.Error("driver/UltrasonicSensorDriver: trig and high check fail")
 					continue
 				}
-				log.Info("driver/UltrasonicSensorDriver: trig and high level")
 				begin := time.Now()
 				checkLow(u.connection.(gpio.DigitalReader), u.pinEcho)
 				d := time.Since(begin)
@@ -43,7 +46,7 @@ func (u *UltrasonicSensorDriver) Start() error {
 					"duration": d,
 					"distance": distance,
 				}).Info("driver/UltrasonicSensorDriver: receive ultrasonic")
-				u.echoChan <- distance
+				u.echo(distance)
 			}
 		}
 	}()
@@ -81,15 +84,15 @@ func (u *UltrasonicSensorDriver) Connection() gobot.Connection {
 	return u.connection
 }
 
-func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig string, pinEcho string) *UltrasonicSensorDriver {
+func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig, pinEcho string, echo func(distance float32)) *UltrasonicSensorDriver {
 	return &UltrasonicSensorDriver{
 		pinTrig:    pinTrig,
 		pinEcho:    pinEcho,
 		name:       gobot.DefaultName("Ultrasonic"),
 		trigChan:   make(chan int8, 1),
-		echoChan:   make(chan float32, 1),
 		connection: adaptor,
 		Commander:  gobot.NewCommander(),
+		echo:       echo,
 	}
 }
 
