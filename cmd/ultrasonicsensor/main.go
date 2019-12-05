@@ -9,16 +9,17 @@ import (
 
 func main() {
 	r := raspi.NewAdaptor()
-	w := drivers.NewWheelDriver(r, "11", "12")
+	u := drivers.NewUltrasonicSensorDriver(r, "12", "11")
 	work := func() {
-		gobot.Every(5*time.Second, func() {
-			_ = w.Toggle()
+		gobot.Every(100*time.Millisecond, func() {
+			_ = u.Trig()
+
 		})
 	}
 
-	robot := gobot.NewRobot("wheelBot",
+	robot := gobot.NewRobot("UBot",
 		[]gobot.Connection{r},
-		[]gobot.Device{w},
+		[]gobot.Device{u},
 		work,
 	)
 
