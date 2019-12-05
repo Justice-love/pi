@@ -57,7 +57,7 @@ func (w *WheelDriver) Connection() gobot.Connection {
 }
 
 func (w *WheelDriver) Stop() error {
-	log.Info("stop")
+	log.WithField("wheel", w.name).Info("driver/WheelDriver: stop")
 	if w.state == stop {
 		return nil
 	}
@@ -76,7 +76,7 @@ func (w *WheelDriver) Stop() error {
 }
 
 func (w *WheelDriver) Front() error {
-	log.Info("front")
+	log.WithField("wheel", w.name).Info("driver/WheelDriver: front")
 	if w.state == front {
 		return nil
 	}
@@ -94,7 +94,7 @@ func (w *WheelDriver) Front() error {
 }
 
 func (w *WheelDriver) Back() error {
-	log.Info("back")
+	log.WithField("wheel", w.name).Info("driver/WheelDriver: back")
 	if w.state == back {
 		return nil
 	}
@@ -112,7 +112,7 @@ func (w *WheelDriver) Back() error {
 }
 
 func (w *WheelDriver) Toggle() error {
-	log.Info("toggle")
+	log.WithField("wheel", w.name).Info("driver/WheelDriver: toggle")
 	if w.state == stop || w.state == back {
 		if err := w.Front(); err != nil {
 			return err
