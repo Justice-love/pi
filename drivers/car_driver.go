@@ -3,6 +3,7 @@ package drivers
 import (
 	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
+	"time"
 )
 
 type CarDriver struct {
@@ -10,6 +11,8 @@ type CarDriver struct {
 	wheels wheels
 	gobot.Commander
 }
+
+const wtime = time.Millisecond * 500
 
 //0:right;1:left
 type wheels [2]*WheelDriver
@@ -86,6 +89,8 @@ func (c *CarDriver) Left() error {
 	if err := c.wheels[1].Back(); err != nil {
 		return err
 	}
+	wt := time.After(wtime)
+	<-wt
 	return nil
 }
 
@@ -95,6 +100,8 @@ func (c *CarDriver) Right() error {
 		return err
 	}
 	if err := c.wheels[1].Front(); err != nil {
+		wt := time.After(wtime)
+		<-wt
 		return err
 	}
 	return nil
