@@ -15,9 +15,10 @@ type CarDriver struct {
 //0:right;1:left
 type wheels [2]*WheelDriver
 
-func NewCarDriver(a gpio.DigitalWriter) *CarDriver {
+func NewCarDriver(a gpio.DigitalWriter, right, left *WheelDriver) *CarDriver {
 	return &CarDriver{
 		name:       gobot.DefaultName("car"),
+		wheels:     wheels{right, left},
 		connection: a,
 		Commander:  gobot.NewCommander(),
 	}
@@ -35,6 +36,7 @@ func (c *CarDriver) Start() error {
 	for _, wheel := range c.wheels {
 		_ = wheel.Start()
 	}
+	return nil
 }
 
 func (c *CarDriver) Halt() error {
