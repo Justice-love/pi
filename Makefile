@@ -12,7 +12,6 @@ build: clean
 	@echo "build"
 	GOARM=7 GOARCH=arm GOOS=linux go build -o build/pi  cmd/pi/main.go
 
-
 clean:
 	@echo "clean"
 	@rm -rf build/*

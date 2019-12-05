@@ -17,6 +17,18 @@ type UltrasonicSensorDriver struct {
 	gobot.Commander
 }
 
+func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig, pinEcho string, echo func(distance float32)) *UltrasonicSensorDriver {
+	return &UltrasonicSensorDriver{
+		pinTrig:    pinTrig,
+		pinEcho:    pinEcho,
+		name:       gobot.DefaultName("Ultrasonic"),
+		trigChan:   make(chan int8, 1),
+		connection: adaptor,
+		Commander:  gobot.NewCommander(),
+		echo:       echo,
+	}
+}
+
 func (u *UltrasonicSensorDriver) Name() string {
 	return u.name
 }
@@ -82,18 +94,6 @@ func (u *UltrasonicSensorDriver) Halt() error {
 
 func (u *UltrasonicSensorDriver) Connection() gobot.Connection {
 	return u.connection
-}
-
-func NewUltrasonicSensorDriver(adaptor gobot.Adaptor, pinTrig, pinEcho string, echo func(distance float32)) *UltrasonicSensorDriver {
-	return &UltrasonicSensorDriver{
-		pinTrig:    pinTrig,
-		pinEcho:    pinEcho,
-		name:       gobot.DefaultName("Ultrasonic"),
-		trigChan:   make(chan int8, 1),
-		connection: adaptor,
-		Commander:  gobot.NewCommander(),
-		echo:       echo,
-	}
 }
 
 func (u *UltrasonicSensorDriver) Trig() error {
