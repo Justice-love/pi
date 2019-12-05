@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
 )
@@ -48,6 +49,7 @@ func (c *CarDriver) Connection() gobot.Connection {
 }
 
 func (c *CarDriver) Stop() error {
+	log.Info("driver/CarDriver: stop")
 	if err := c.wheels[0].Stop(); err != nil {
 		return err
 	}
@@ -58,6 +60,7 @@ func (c *CarDriver) Stop() error {
 }
 
 func (c *CarDriver) Front() error {
+	log.Info("driver/CarDriver: front")
 	if err := c.wheels[0].Front(); err != nil {
 		return err
 	}
@@ -68,6 +71,7 @@ func (c *CarDriver) Front() error {
 }
 
 func (c *CarDriver) Back() error {
+	log.Info("driver/CarDriver: back")
 	if err := c.wheels[0].Back(); err != nil {
 		return err
 	}
@@ -78,6 +82,7 @@ func (c *CarDriver) Back() error {
 }
 
 func (c *CarDriver) Left() error {
+	log.Info("driver/CarDriver: left")
 	if err := c.wheels[0].Front(); err != nil {
 		return err
 	}
@@ -88,6 +93,7 @@ func (c *CarDriver) Left() error {
 }
 
 func (c *CarDriver) Right() error {
+	log.Info("driver/CarDriver: right")
 	if err := c.wheels[0].Back(); err != nil {
 		return err
 	}
