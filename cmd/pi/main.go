@@ -11,7 +11,9 @@ func main() {
 	distanceChan := make(chan int64, 100)
 	a := raspi.NewAdaptor()
 	r := drivers.NewWheelDriver(a, "11", "12")
+	r.SetName("right wheel")
 	l := drivers.NewWheelDriver(a, "11", "12")
+	l.SetName("left wheel")
 	c := drivers.NewCarDriver(r, l)
 	u := drivers.NewUltrasonicSensorDriver(a, "13", "14", func(distance int64) {
 		distanceChan <- distance
@@ -27,7 +29,7 @@ func main() {
 		})
 	}
 
-	robot := gobot.NewRobot("wheelBot",
+	robot := gobot.NewRobot("avoidance_car",
 		[]gobot.Connection{a},
 		[]gobot.Device{ac},
 		work,
