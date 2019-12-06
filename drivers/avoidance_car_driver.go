@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"time"
 )
@@ -56,11 +57,15 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 	for {
 		select {
 		case d := <-distanceChan:
+			log.WithField("distance", d).Info("driver/AvoidanceCarDriver: receive distance")
 			if d < avoidanceDistance {
+				log.WithField("distance", d).Info("driver/AvoidanceCarDriver: will change direction")
 				_ = a.carDriver.Stop()
 				if time.Now().Unix()&mask == mask {
+					log.WithField("distance", d).Info("driver/AvoidanceCarDriver: turn right")
 					go a.carDriver.Right()
 				} else {
+					log.WithField("distance", d).Info("driver/AvoidanceCarDriver: turn left")
 					go a.carDriver.Left()
 				}
 			}
