@@ -20,10 +20,11 @@ func main() {
 	})
 	ac := drivers.NewAvoidanceCarDriver(c, u)
 
-	_ = c.Front()
-	go ac.Avoidance(distanceChan)
-
 	work := func() {
+
+		_ = c.Front()
+		go ac.Avoidance(distanceChan)
+
 		gobot.Every(100*time.Millisecond, func() {
 			_ = u.Trig()
 		})

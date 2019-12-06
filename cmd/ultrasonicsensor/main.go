@@ -10,7 +10,7 @@ import (
 
 func main() {
 	r := raspi.NewAdaptor()
-	u := drivers.NewUltrasonicSensorDriver(r, "12", "11", func(distance float32) {
+	u := drivers.NewUltrasonicSensorDriver(r, "12", "11", func(distance int64) {
 		logrus.WithField("distance", distance).Info("ultrasonicsensor/main: receive distance")
 	})
 	work := func() {
