@@ -100,8 +100,6 @@ func (c *CarDriver) Right() error {
 		return err
 	}
 	if err := c.wheels[1].Front(); err != nil {
-		wt := time.After(wtime)
-		<-wt
 		return err
 	}
 	return nil

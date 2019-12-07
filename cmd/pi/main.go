@@ -2,10 +2,15 @@ package main
 
 import (
 	"eddy.org/pi/drivers"
+	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/platforms/raspi"
 	"time"
 )
+
+func init() {
+	log.SetLevel(log.WarnLevel)
+}
 
 func main() {
 	distanceChan := make(chan int64, 100)

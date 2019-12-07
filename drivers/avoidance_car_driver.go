@@ -59,14 +59,26 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 		case d := <-distanceChan:
 			log.WithField("distance", d).Info("driver/AvoidanceCarDriver: receive distance")
 			if d < avoidanceDistance {
-				log.WithField("distance", d).Info("driver/AvoidanceCarDriver: will change direction")
+				log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: will change direction")
 				_ = a.carDriver.Stop()
 				if time.Now().Unix()&mask == mask {
-					log.WithField("distance", d).Info("driver/AvoidanceCarDriver: turn right")
-					go a.carDriver.Right()
+					log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: turn right")
+					go func() {
+						_ = a.carDriver.Back()
+						time.Sleep(500 * time.Millisecond)
+						_ = a.carDriver.Right()
+						time.Sleep(2 * time.Second)
+						_ = a.carDriver.Front()
+					}()
 				} else {
-					log.WithField("distance", d).Info("driver/AvoidanceCarDriver: turn left")
-					go a.carDriver.Left()
+					log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: turn left")
+					go func() {
+						_ = a.carDriver.Back()
+						time.Sleep(500 * time.Millisecond)
+						_ = a.carDriver.Left()
+						time.Sleep(2 * time.Second)
+						_ = a.carDriver.Front()
+					}()
 				}
 			}
 		}

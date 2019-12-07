@@ -47,7 +47,7 @@ func (u *UltrasonicSensorDriver) Start() error {
 				cr := checkHigh(u.connection.(gpio.DigitalReader), u.pinEcho)
 				log.WithField("high check", cr).Info("driver/UltrasonicSensorDriver: trig and high check")
 				if !cr {
-					log.Error("driver/UltrasonicSensorDriver: trig and high check fail")
+					log.Warn("driver/UltrasonicSensorDriver: trig and high check fail")
 					continue
 				}
 				begin := time.Now()
