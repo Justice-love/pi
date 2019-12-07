@@ -8,31 +8,33 @@ import (
 )
 
 func main() {
-	distanceChan := make(chan int64, 100)
 	a := raspi.NewAdaptor()
 	l := drivers.NewWheelDriver(a, "11", "12")
 	l.SetName("left wheel")
 	r := drivers.NewWheelDriver(a, "15", "13")
 	r.SetName("right wheel")
 	c := drivers.NewCarDriver(r, l)
-	u := drivers.NewUltrasonicSensorDriver(a, "40", "38", func(distance int64) {
-		distanceChan <- distance
-	})
-	ac := drivers.NewAvoidanceCarDriver(c, u)
 
 	work := func() {
 
 		_ = c.Front()
-		go ac.Avoidance(distanceChan)
-
 		gobot.Every(100*time.Millisecond, func() {
-			_ = u.Trig()
+			switch time.Now().Unix() % 4 {
+			case 0:
+				_ = c.Front()
+			case 1:
+				_ = c.Start()
+			case 2:
+				_ = c.Left()
+			case 3:
+				_ = c.Right()
+			}
 		})
 	}
 
-	robot := gobot.NewRobot("avoidance_car",
+	robot := gobot.NewRobot("car",
 		[]gobot.Connection{a},
-		[]gobot.Device{ac},
+		[]gobot.Device{c},
 		work,
 	)
 
