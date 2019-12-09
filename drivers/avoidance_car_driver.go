@@ -9,7 +9,12 @@ import (
 const (
 	avoidanceDistance = 5
 	mask              = 0x0000000000000001
+	left              = iota
+	right
+	none
 )
+
+var keep int8 = none
 
 type AvoidanceCarDriver struct {
 	carDriver              *CarDriver
@@ -61,7 +66,16 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 			if d < avoidanceDistance {
 				log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: will change direction")
 				_ = a.carDriver.Stop()
-				if time.Now().Unix()&mask == mask {
+				if keep == none {
+					if time.Now().Unix()&mask == mask {
+						keep = right
+					} else {
+						keep = left
+					}
+				}
+
+				switch keep {
+				case right:
 					log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: turn right")
 					go func() {
 						_ = a.carDriver.Back()
@@ -70,7 +84,7 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 						time.Sleep(2 * time.Second)
 						_ = a.carDriver.Front()
 					}()
-				} else {
+				case left:
 					log.WithField("distance", d).Warn("driver/AvoidanceCarDriver: turn left")
 					go func() {
 						_ = a.carDriver.Back()
@@ -79,7 +93,11 @@ func (a *AvoidanceCarDriver) Avoidance(distanceChan chan int64) {
 						time.Sleep(2 * time.Second)
 						_ = a.carDriver.Front()
 					}()
+				default:
+					log.Error("unsupported direction")
 				}
+			} else {
+				keep = none
 			}
 		}
 	}
