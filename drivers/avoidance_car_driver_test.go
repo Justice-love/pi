@@ -62,15 +62,15 @@ func (a *avoidanceCarDriverTestSuit) TestAvoidanceCarDriver() {
 
 	err = a.avoidanceCarDriver.carDriver.Front()
 	assert.NoError(err)
-	assert.Equal(test.CheckValue{"1", 1}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"2", 0}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"3", 1}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"4", 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "1", Val: 1}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "2", Val: 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "3", Val: 1}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "4", Val: 0}, <-a.checkChan)
 
 	err = a.avoidanceCarDriver.ultrasonicSensorDriver.Trig()
 	assert.NoError(err)
-	assert.Equal(test.CheckValue{"5", 1}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"5", 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "5", Val: 1}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "5", Val: 0}, <-a.checkChan)
 
 	a.readChan <- 1
 	c := time.After(800 * time.Microsecond)
@@ -79,10 +79,10 @@ func (a *avoidanceCarDriverTestSuit) TestAvoidanceCarDriver() {
 	go a.avoidanceCarDriver.Avoidance(a.distanceChan)
 	time.Sleep(100 * time.Millisecond)
 
-	assert.Equal(test.CheckValue{"1", 0}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"2", 0}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"3", 0}, <-a.checkChan)
-	assert.Equal(test.CheckValue{"4", 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "1", Val: 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "2", Val: 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "3", Val: 0}, <-a.checkChan)
+	assert.Equal(test.CheckValue{Pin: "4", Val: 0}, <-a.checkChan)
 }
 
 func TestAvoidanceCarDriver(t *testing.T) {

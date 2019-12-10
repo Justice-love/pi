@@ -1,4 +1,5 @@
-.PHONY: build clean fmt scp run
+
+PKGS := $(shell go list ./... )
 
 scp: build
 	@echo "scp"
@@ -18,3 +19,6 @@ clean:
 
 fmt:
 	@find . -name "*.go" -type f -exec go fmt {} \;
+
+vet:
+	@go vet ${PKGS}

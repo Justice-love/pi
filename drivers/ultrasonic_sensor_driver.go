@@ -4,8 +4,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/drivers/gpio"
+	"sync/atomic"
 	"time"
 )
+
+var tn int32 = 1
 
 type UltrasonicSensorDriver struct {
 	pinTrig    string
@@ -43,11 +46,13 @@ func (u *UltrasonicSensorDriver) Start() error {
 		for {
 			select {
 			case <-u.trigChan:
+				stopTrig()
 				log.Info("driver/UltrasonicSensorDriver: trig ")
 				cr := checkHigh(u.connection.(gpio.DigitalReader), u.pinEcho)
 				log.WithField("high check", cr).Info("driver/UltrasonicSensorDriver: trig and high check")
 				if !cr {
 					log.Warn("driver/UltrasonicSensorDriver: trig and high check fail")
+					nextTrig()
 					continue
 				}
 				begin := time.Now()
@@ -59,10 +64,23 @@ func (u *UltrasonicSensorDriver) Start() error {
 					"distance": distance,
 				}).Info("driver/UltrasonicSensorDriver: receive ultrasonic")
 				u.echo(distance)
+				nextTrig()
 			}
 		}
 	}()
 	return nil
+}
+
+func stopTrig() {
+	atomic.StoreInt32(&tn, 0)
+}
+
+func nextTrig() {
+	atomic.StoreInt32(&tn, 1)
+}
+
+func needTrig() bool {
+	return atomic.LoadInt32(&tn) == 1
 }
 
 func checkHigh(reader gpio.DigitalReader, pinEcho string) bool {
@@ -97,14 +115,16 @@ func (u *UltrasonicSensorDriver) Connection() gobot.Connection {
 }
 
 func (u *UltrasonicSensorDriver) Trig() error {
-	if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 1); err != nil {
-		return err
+	if needTrig() {
+		if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 1); err != nil {
+			return err
+		}
+		c := time.After(10 * time.Microsecond)
+		<-c
+		if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 0); err != nil {
+			return err
+		}
+		u.trigChan <- 1
 	}
-	c := time.After(10 * time.Microsecond)
-	<-c
-	if err := u.connection.(gpio.DigitalWriter).DigitalWrite(u.pinTrig, 0); err != nil {
-		return err
-	}
-	u.trigChan <- 1
 	return nil
 }

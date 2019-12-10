@@ -40,8 +40,8 @@ func (u *UltrasonicSensorDriverTestSuite) TestUltrasonicSensorDriver() {
 		assert := require.New(t)
 		err := u.driver.Trig()
 		assert.NoError(err)
-		assert.Equal(test.CheckValue{"1", 1}, <-u.checkChan)
-		assert.Equal(test.CheckValue{"1", 0}, <-u.checkChan)
+		assert.Equal(test.CheckValue{Pin: "1", Val: 1}, <-u.checkChan)
+		assert.Equal(test.CheckValue{Pin: "1", Val: 0}, <-u.checkChan)
 	})
 	u.T().Run("test echo", func(t *testing.T) {
 		assert := require.New(t)
