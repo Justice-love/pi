@@ -24,4 +24,4 @@ vet:
 	@go vet ${PKGS}
 
 test:
-	@go test -v ${PKGS}
+	@go test -p 1 -v -cover ${PKGS}
