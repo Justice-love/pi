@@ -22,3 +22,6 @@ fmt:
 
 vet:
 	@go vet ${PKGS}
+
+test:
+	@go test -v ${PKGS}
