@@ -12,3 +12,5 @@
 *.out
 build/
 .idea/
+*.pb.go
+*.gw.go

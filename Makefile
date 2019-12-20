@@ -21,7 +21,10 @@ fmt:
 	@find . -name "*.go" -type f -exec go fmt {} \;
 
 vet:
-	@go vet ${PKGS}
+	go vet ${PKGS}
 
 test:
 	@go test -p 1 -v -cover ${PKGS}
+
+gen:
+	@go generate internal/car/api.go
