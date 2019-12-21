@@ -6,7 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"gobot.io/x/gobot"
 	"gobot.io/x/gobot/platforms/raspi"
-	"time"
 )
 
 func main() {
@@ -32,18 +31,6 @@ func main() {
 				_ = c.Right()
 			default:
 				logrus.WithField("command", direction.String()).Fatal("cmd/car: unhandled command")
-			}
-		})
-		gobot.Every(100*time.Millisecond, func() {
-			switch time.Now().Unix() % 4 {
-			case 0:
-				_ = c.Front()
-			case 1:
-				_ = c.Start()
-			case 2:
-				_ = c.Left()
-			case 3:
-				_ = c.Right()
 			}
 		})
 	}
