@@ -32,7 +32,7 @@ func NewCarServerAPI() *grpcServerAPI {
 	return &grpcServerAPI{}
 }
 
-func (c *grpcServerAPI) Commond(context context.Context, request *CarControlRequest) (*CarControlResponse, error) {
+func (c *grpcServerAPI) Command(context context.Context, request *CarControlRequest) (*CarControlResponse, error) {
 	logrus.Info(request.Direction.String())
 	return &CarControlResponse{}, nil
 }
