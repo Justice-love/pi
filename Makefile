@@ -1,3 +1,4 @@
+.PHONY: scp run build clean fmt vet test gen
 
 PKGS := $(shell go list ./... )
 
