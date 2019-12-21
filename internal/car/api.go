@@ -11,7 +11,10 @@ import (
 
 const BIND = "0.0.0.0:18901"
 
-func Setup() error {
+var control func(direction Direction)
+
+func Setup(c func(direction Direction)) error {
+	control = c
 	server := grpc.NewServer()
 	carAPI := NewCarServerAPI()
 	RegisterCarRpcServer(server, carAPI)
@@ -33,6 +36,7 @@ func NewCarServerAPI() *grpcServerAPI {
 }
 
 func (c *grpcServerAPI) Command(context context.Context, request *CarControlRequest) (*CarControlResponse, error) {
-	logrus.Info(request.Direction.String())
+	logrus.WithField("direction", request.Direction.String()).Info("internal/car: received direction")
+	control(request.Direction)
 	return &CarControlResponse{}, nil
 }

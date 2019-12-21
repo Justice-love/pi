@@ -15,11 +15,26 @@ type CarDriver struct {
 type wheels [2]*WheelDriver
 
 func NewCarDriver(right, left *WheelDriver) *CarDriver {
-	return &CarDriver{
+	driver := &CarDriver{
 		name:      gobot.DefaultName("car"),
 		wheels:    wheels{right, left},
 		Commander: gobot.NewCommander(),
 	}
+	driver.Commander.AddCommand("Front", func(m map[string]interface{}) interface{} {
+		return driver.Front()
+	})
+	driver.Commander.AddCommand("Back", func(m map[string]interface{}) interface{} {
+		return driver.Back()
+	})
+	driver.Commander.AddCommand("Left", func(m map[string]interface{}) interface{} {
+		return driver.Left()
+	})
+	driver.Commander.AddCommand("Right", func(m map[string]interface{}) interface{} {
+		return driver.Right()
+	})
+
+	return driver
+
 }
 
 func (c *CarDriver) Name() string {
