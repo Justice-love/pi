@@ -12,7 +12,7 @@ run: scp
 
 build: clean
 	@echo "build"
-	GOARM=7 GOARCH=arm GOOS=linux go build -o build/pi  cmd/video/main.go
+	GOARM=7 GOARCH=arm GOOS=linux go build -o build/pi  cmd/car/main.go
 
 clean:
 	@echo "clean"
