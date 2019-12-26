@@ -10,15 +10,14 @@ import (
 
 func main() {
 	a := raspi.NewAdaptor()
-	l := drivers.NewWheelDriver(a, "11", "12")
-	l.SetName("left wheel")
-	r := drivers.NewWheelDriver(a, "15", "13")
+	r := drivers.NewWheelDriver(a, "12", "11")
+	l := drivers.NewWheelDriver(a, "13", "15")
 	r.SetName("right wheel")
+	l.SetName("left wheel")
 	c := drivers.NewCarDriver(r, l)
 
 	work := func() {
 
-		_ = c.Front()
 		_ = car.Setup(func(direction car.Direction) {
 			switch direction {
 			case car.Direction_FRONT:
