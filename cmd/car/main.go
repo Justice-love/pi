@@ -11,25 +11,31 @@ import (
 func main() {
 	a := raspi.NewAdaptor()
 	r := drivers.NewWheelDriver(a, "12", "11")
+	r.SetName("left wheel")
 	l := drivers.NewWheelDriver(a, "13", "15")
-	r.SetName("right wheel")
-	l.SetName("left wheel")
+	l.SetName("right wheel")
 	c := drivers.NewCarDriver(r, l)
 
 	work := func() {
 
 		_ = car.Setup(func(direction car.Direction) {
+			var err error
 			switch direction {
 			case car.Direction_FRONT:
-				_ = c.Front()
+				err = c.Front()
 			case car.Direction_BACK:
-				_ = c.Back()
+				err = c.Back()
 			case car.Direction_LEFT:
-				_ = c.Left()
+				err = c.Left()
 			case car.Direction_RIGHT:
-				_ = c.Right()
+				err = c.Right()
+			case car.Direction_STOP:
+				err = c.Stop()
 			default:
 				logrus.WithField("command", direction.String()).Fatal("cmd/car: unhandled command")
+			}
+			if err != nil {
+				logrus.Error(err)
 			}
 		})
 	}
