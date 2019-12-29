@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"testing"
+	"time"
 )
 
 type CarDriverTestSuit struct {
@@ -59,23 +60,32 @@ func (c *CarDriverTestSuit) TestCarDriver() {
 		assert.Equal(test.CheckValue{Pin: "3", Val: 0}, <-c.checkChan)
 		assert.Equal(test.CheckValue{Pin: "4", Val: 0}, <-c.checkChan)
 	})
-	c.T().Run("left test", func(t *testing.T) {
-		assert := require.New(t)
-		err := c.carDriver.Left()
-		assert.NoError(err)
-		assert.Equal(test.CheckValue{Pin: "1", Val: 1}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "2", Val: 0}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "3", Val: 0}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "4", Val: 1}, <-c.checkChan)
-	})
-	c.T().Run("right test", func(t *testing.T) {
-		assert := require.New(t)
-		err := c.carDriver.Right()
-		assert.NoError(err)
-		assert.Equal(test.CheckValue{Pin: "1", Val: 0}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "2", Val: 1}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "3", Val: 1}, <-c.checkChan)
-		assert.Equal(test.CheckValue{Pin: "4", Val: 0}, <-c.checkChan)
+	//c.T().Run("left test", func(t *testing.T) {
+	//	assert := require.New(t)
+	//	err := c.carDriver.Left()
+	//	assert.NoError(err)
+	//	assert.Equal(test.CheckValue{Pin: "1", Val: 1}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "2", Val: 0}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "3", Val: 0}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "4", Val: 1}, <-c.checkChan)
+	//})
+	//c.T().Run("right test", func(t *testing.T) {
+	//	assert := require.New(t)
+	//	err := c.carDriver.Right()
+	//	assert.NoError(err)
+	//	assert.Equal(test.CheckValue{Pin: "1", Val: 0}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "2", Val: 1}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "3", Val: 1}, <-c.checkChan)
+	//	assert.Equal(test.CheckValue{Pin: "4", Val: 0}, <-c.checkChan)
+	//})
+	c.T().Run("every func test", func(t *testing.T) {
+		c.carDriver.every(func() error {
+			println("run")
+			return nil
+		})
+		a := time.After(3 * time.Second)
+		<-a
+		st()
 	})
 }
 
