@@ -14,3 +14,5 @@ build/
 .idea/
 *.pb.go
 *.gw.go
+.DS_Store
+__MACOSX/
